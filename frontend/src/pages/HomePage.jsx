@@ -9,7 +9,7 @@ import ChatContainer from "../components/ChatContainer"
 
 const HomePage = () => {
   const { selectedUser } = useChatStore()
-  const [sidebarWidth, setSidebarWidth] = useState(320) // Default width in pixels
+  const [sidebarWidth, setSidebarWidth] = useState(320)
   const [isResizing, setIsResizing] = useState(false)
 
   const startResizing = useCallback((mouseDownEvent) => {
@@ -25,9 +25,8 @@ const HomePage = () => {
     (mouseMoveEvent) => {
       if (isResizing) {
         const newWidth = mouseMoveEvent.clientX
-        // Set minimum and maximum widths
-        const minWidth = 250
-        const maxWidth = 600
+        const minWidth = 280
+        const maxWidth = 500
 
         if (newWidth >= minWidth && newWidth <= maxWidth) {
           setSidebarWidth(newWidth)
@@ -37,7 +36,6 @@ const HomePage = () => {
     [isResizing],
   )
 
-  // Add event listeners for mouse move and mouse up when resizing
   useEffect(() => {
     if (isResizing) {
       const handleMouseMove = (e) => {
@@ -52,7 +50,6 @@ const HomePage = () => {
       document.addEventListener("mousemove", handleMouseMove)
       document.addEventListener("mouseup", handleMouseUp)
 
-      // Prevent text selection while dragging
       document.body.style.userSelect = "none"
       document.body.style.cursor = "col-resize"
 
@@ -66,26 +63,39 @@ const HomePage = () => {
   }, [isResizing, resize, stopResizing])
 
   return (
-    <div className="h-screen flex bg-gray-50">
+    <div className="h-screen flex bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
       {/* Sidebar with dynamic width */}
-      <div style={{ width: `${sidebarWidth}px` }} className="flex-shrink-0 relative">
+      <div
+        style={{ width: `${sidebarWidth}px` }}
+        className="flex-shrink-0 relative bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-xl shadow-slate-900/5"
+      >
         <Sidebar />
 
-        {/* Resize handle */}
+        {/* Elegant Resize Handle */}
         <div
-          className={`absolute top-0 right-0 w-2 h-full cursor-col-resize bg-transparent hover:bg-[#1877F2]/20 transition-colors border-r-2 border-transparent hover:border-[#1877F2] ${
-            isResizing ? "bg-[#1877F2]/30 border-[#1877F2]" : ""
+          className={`absolute top-0 right-0 w-1 h-full cursor-col-resize transition-all duration-300 ${
+            isResizing
+              ? "bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 shadow-lg shadow-amber-500/25"
+              : "bg-transparent hover:bg-gradient-to-b hover:from-slate-300 hover:via-slate-400 hover:to-slate-500"
           }`}
           onMouseDown={startResizing}
           style={{ zIndex: 10 }}
         >
-          {/* Visual indicator for the resize handle */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-12 bg-[#E4E6EA] rounded-sm opacity-60" />
+          {/* Sophisticated Visual Indicator */}
+          <div
+            className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+              isResizing
+                ? "w-1 h-16 bg-gradient-to-b from-amber-300 to-amber-500 rounded-full shadow-lg"
+                : "w-0.5 h-12 bg-slate-300 rounded-full opacity-0 hover:opacity-100"
+            }`}
+          />
         </div>
       </div>
 
-      {/* Chat container takes remaining space */}
-      <div className="flex-1 flex flex-col min-w-0">{!selectedUser ? <NoChatSelected /> : <ChatContainer />}</div>
+      {/* Chat container with elegant styling */}
+      <div className="flex-1 flex flex-col min-w-0 bg-gradient-to-b from-white via-slate-50/50 to-blue-50/30">
+        {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+      </div>
     </div>
   )
 }
